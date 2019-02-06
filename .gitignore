@@ -1,2 +1,13 @@
+# Zipped app package
 app.zip
+
+# Contains storage key secrets - refer to local.settings.copy.json
+local.settings.json
+
+# Extensions for Durable Function bindings - refer to README.md for installation
+app/obj
+app/bin
+
+# Local development files
 node_modules
+.ignore
