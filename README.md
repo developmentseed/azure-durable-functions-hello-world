@@ -17,7 +17,7 @@ Working with Azure Functions and newer bindings such as the Durable Function ext
 
 2. Install [Azure function v2 bindings](https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings). The Azure functions core tools library will scan your functions and install the necessary bindings. However, at time of writing it includes a legacy version of the durable functions binding, which must be overridden.
 
-```
+```sh
 cd app
 # Install default bindings
 func extensions install
@@ -37,18 +37,18 @@ Make sure you have access to an Azure account with a working subscription, ie pa
 1. Log into the CLI: `az login`. This opens a login dialogue in a web browser.
 
 2. Create a resource group:
-```
+```sh
 az group create --name dsDurableFunctionsTest --location "West US"
 ````
 
 3. Create a storage account:
-```
+```sh
 az storage account create --name <STORAGE_ACCOUNT_NAME> --location "West US" --resource-group dsDurableFunctionsTest --sku Standard_LRS
 ```
 Note, storage account names weirdly 1. can only contain lower-case alphanumeric characters and 2. must be unique.
 
 4. Create a function resource:
-```
+```sh
 az functionapp create --resource-group dsDurableFunctionsTest --consumption-plan-location westus --name dsDurableFunctions --storage-account <STORAGE_ACCOUNT_NAME> --runtime node
 ```
 
@@ -56,7 +56,7 @@ az functionapp create --resource-group dsDurableFunctionsTest --consumption-plan
 
 6. Install [Azure function v2 bindings](https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings). The Azure functions core tools library will scan your functions and install the necessary bindings. However, at time of writing it includes a legacy version of the durable functions binding, which must be overridden.
 
-```
+```sh
 cd app
 # Install default bindings
 func extensions install
@@ -64,16 +64,11 @@ func extensions install
 func extensions install --package Microsoft.Azure.WebJobs.Extensions.DurableTask --version 1.7.1
 ```
 
-7. Create a zip of the `app` directory:
-```
-rm app.zip
-cd app
-zip -r ../app.zip ./*
-```
+7. Create a zip of the `app` directory and deploy the zip file:
 
-8. Deploy the zip file:
-```
-az functionapp deployment source config-zip -g dsDurableFunctionsTest -n dsDurableFunctions --src app.zip
+```sh
+# In the app/ directory
+./gen-app-package.sh
 ```
 
 9. Test the basic function at https://dsdurablefunctions.azurewebsites.net/api/reply.

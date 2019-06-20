@@ -1,0 +1,26 @@
+{
+  "bindings": [
+    {
+      "queueName": "trigger-cumulus-wf",
+      "connection": "AzureWebJobsStorage",
+      "name": "myQueueItem",
+      "type": "queueTrigger",
+      "direction": "in"
+    },
+    {
+      "name": "myInputBlob",
+      "type": "blob",
+      "path": "cumulus-blobs/{queueTrigger}",
+      "connection": "AzureWebJobsStorage",
+      "direction": "in"
+    },    
+    {
+      "name": "myOutputBlob",
+      "type": "blob",
+      "path": "cumulus-blobs/{queueTrigger}-Copy",
+      "connection": "AzureWebJobsStorage",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}
