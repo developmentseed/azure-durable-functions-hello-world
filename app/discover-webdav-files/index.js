@@ -1,26 +1,24 @@
-const request = require('request');
+const { createClient } = require('webdav');
+const azure = require('azure-storage');
+const queueSvc = azure.createQueueService();
 
-module.exports = function(context, message) {
-  context.log('Node.js queue trigger function processed work item');
-  context.log(JSON.stringify(message, null, 2));
-  // OR access using context.bindings.<name>
-  // context.log('Node.js queue trigger function processed work item', context.bindings.myQueueItem);
-  const options = {
-    url: message,
-    auth: {
-      'user': 'aimeeb',
-      'pass': process.env.WEBDAV_PASSWORD
+module.exports = async function (context) {
+  const baseUrl = 'https://podaac-tools.jpl.nasa.gov/drive/files/allData/ghrsst/data/GDS2/L4/GLOB/JPL/MUR/v4.1/2002/340';
+  const client = createClient(
+    baseUrl, {
+      username: 'aimeeb',
+      password: process.env.WEBDAV_PASSWORD
     }
-  };
-  
-  context.log('Starting request');
-  return request.get(options, function (error, response, body) {
-    context.log('statusCode:', response && response.statusCode);
-    if (err) {
-      context.error('error:', error); // Print the error if one occurred
-      return err;
-    };
-    context.bindings.myOutputBlob = body;
-    context.done();
-  });
-};
+  );
+   
+  // Get directory contents
+  const remoteFiles = await client.getDirectoryContents('/')
+    .then((response) => {
+      const filesToDownload = response.filter((x) => {
+        return x.filename.match(/.+\.nc$/);
+      });
+      return filesToDownload.map(x => `${baseUrl}${x.filename}`);
+    });
+
+  return remoteFiles;
+}

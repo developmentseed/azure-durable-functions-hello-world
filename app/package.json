@@ -2,6 +2,7 @@
   "dependencies": {
     "azure-storage": "^2.10.3",
     "durable-functions": "^1.1.4",
+    "request-promise": "^4.2.4",
     "webdav": "^2.8.0"
   }
 }

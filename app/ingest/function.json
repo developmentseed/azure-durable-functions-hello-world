@@ -8,16 +8,9 @@
       "direction": "in"
     },
     {
-      "name": "myInputBlob",
+      "name": "$return",
       "type": "blob",
-      "path": "cumulus-blobs/{queueTrigger}",
-      "connection": "AzureWebJobsStorage",
-      "direction": "in"
-    },    
-    {
-      "name": "myOutputBlob",
-      "type": "blob",
-      "path": "cumulus-blobs/{queueTrigger}-Copy",
+      "path": "cumulus-blobs/{outfilename}",
       "connection": "AzureWebJobsStorage",
       "direction": "out"
     }
