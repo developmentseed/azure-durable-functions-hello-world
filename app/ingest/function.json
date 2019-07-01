@@ -6,13 +6,6 @@
       "name": "myQueueItem",
       "type": "queueTrigger",
       "direction": "in"
-    },
-    {
-      "name": "$return",
-      "type": "blob",
-      "path": "cumulus-blobs/{outfilename}",
-      "connection": "AzureWebJobsStorage",
-      "direction": "out"
     }
   ],
   "disabled": false

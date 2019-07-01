@@ -1,9 +1,25 @@
 const rp = require('request-promise');
+const storage = require('azure-storage');
+
+const blobService = storage.createBlobService();
+
+const uploadString = async (containerName, blobName, text) => {
+  return new Promise((resolve, reject) => {
+    blobService.createBlockBlobFromText(containerName, blobName, text, err => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({
+          message: `Text "${text}" is written to blob storage`
+        });
+      }
+    });
+  });
+};
 
 module.exports = async function(context, message) {
   context.log('Node.js queue trigger function processed work item', message);
-  const outfilename = message.split('/').slice(-1);
-  context.bindings.outfilename = outfilename;
+  const outfilename = message.split('/').slice(-1)[0];
 
   // OR access using context.bindings.<name>
   // context.log('Node.js queue trigger function processed work item', context.bindings.myQueueItem);
@@ -14,7 +30,7 @@ module.exports = async function(context, message) {
       'pass': process.env.WEBDAV_PASSWORD
     }
   };
-  
+
   context.log('Starting request');
   let body
   await rp.get(options)
@@ -23,9 +39,11 @@ module.exports = async function(context, message) {
       body = res;
     })
     .catch((err) => {
-      context.error(`Caught error ${res}`);
+      console.error(`Caught error ${res}`);
       return err;
     });
 
-  return body;
+  const uploadResult = await uploadString('cumulus-blobs', outfilename, body);
+  context.log(`Upload Result ${uploadResult}`);
+  return uploadResult;
 };
